@@ -1,2 +1,7 @@
 *~
-buildtree/
+r_build/
+d_build/
+*.swp
+\#*
+*\#
+.\#*
