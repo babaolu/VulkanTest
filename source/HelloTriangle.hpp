@@ -8,12 +8,17 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <vector>
+#include <cstring>
 #include <stdexcept>
 #include <cstdlib>
 
 class HelloTriangleApp
 {
 	GLFWwindow *window;
+	VkInstance instance;
+
+	void createInstance();
 
 	void initWindow();
 	void initVulkan();
@@ -28,5 +33,7 @@ public:
 		cleanup();
 	}
 };
+
+bool pstrpstr(char **, char **);
 
 #endif //HELLO_TRIANGLE_HPP
