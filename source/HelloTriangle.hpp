@@ -4,6 +4,12 @@
 #define WIDTH 800
 #define HEIGHT 600
 
+#ifdef NDEBUG
+const bool enableValidationLayers = false;
+#else
+const bool enableValidationLayers = true;
+#endif
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -13,12 +19,17 @@
 #include <stdexcept>
 #include <cstdlib>
 
+const std::vector<const char *> validationLayers = {
+	"VK_LAYER_KHRONOS_validation", nullptr
+};
+
 class HelloTriangleApp
 {
 	GLFWwindow *window;
 	VkInstance instance;
 
 	void createInstance();
+	bool checkValidationLayerSupport();
 
 	void initWindow();
 	void initVulkan();
