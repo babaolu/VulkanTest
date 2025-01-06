@@ -3,12 +3,13 @@
 void HelloTriangleApp::initVulkan()
 {
 	createInstance();
+	setupDebugMessenger();
 }
 
 void HelloTriangleApp::createInstance()
 {
 	uint32_t glfwExtensionCount = 0, extensionCount = 0;
-	const char** glfwExtensions;
+	std::vector<const char*> glfwExtensions;
 
 	if (enableValidationLayers && !checkValidationLayerSupport())
 	{
@@ -29,7 +30,8 @@ void HelloTriangleApp::createInstance()
 	createInfo.pApplicationInfo = &appInfo;
 
 
-	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+	glfwExtensions = getRequiredExtensions();
+	glfwExtensionCount = glfwExtensions.size();
 
 	// Checking for extension support
 	vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount,
@@ -39,6 +41,10 @@ void HelloTriangleApp::createInstance()
 					       extensions.data());
 
 	VkExtensionProperties *pextensions = extensions.data();
+
+	/* Array of pointers must always end with a nullptr for successfull
+	 * checking
+	 */
 	char *extensionNamesArray[extensionCount + 1];
 	char *glfwExtensionNames[glfwExtensionCount + 1];
 	extensionNamesArray[extensionCount] = nullptr;
@@ -66,16 +72,23 @@ void HelloTriangleApp::createInstance()
 		std::cout << "Required extensions not complete\n";
 	}
 	createInfo.enabledExtensionCount = glfwExtensionCount;
-	createInfo.ppEnabledExtensionNames = glfwExtensions;
+	createInfo.ppEnabledExtensionNames = glfwExtensions.data();
+
+	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
 
 	if (enableValidationLayers)
 	{
 		createInfo.enabledLayerCount =
 			static_cast<uint32_t>(validationLayers.size() - 1);
 		createInfo.ppEnabledLayerNames = validationLayers.data();
+
+		populateDebugMessengerCreateInfo(debugCreateInfo);
+		createInfo.pNext =
+			(VkDebugUtilsMessengerCreateInfoEXT *) &debugCreateInfo;
 	} else
 	{
-		createInfo. enabledLayerCount = 0;
+		createInfo.enabledLayerCount = 0;
+		createInfo.pNext = nullptr;
 	}
 
 	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
@@ -85,32 +98,6 @@ void HelloTriangleApp::createInstance()
 	}
 	std::cout << "Instance creation successful\n"
 		  << "Instance: "<< instance << std::endl;
-}
-
-bool HelloTriangleApp::checkValidationLayerSupport()
-{
-	uint32_t layerCount;
-	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
-	VkLayerProperties availableLayers[layerCount];
-	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers);
-	char *layerNames[layerCount + 1];
-	layerNames[layerCount] = nullptr;
-	std::cout << "Available layer properties:\n";
-	for (uint32_t iter = 0; iter < layerCount; iter++)
-	{
-		layerNames[iter] = availableLayers[iter].layerName;
-		std::cout << '\t' << layerNames[iter] << '\n';
-	}
-	if (pstrpstr(layerNames, const_cast<char **>(validationLayers.data())))
-	{
-		std::cout << "Validation Layer supported" << std::endl;
-		return (true);
-	} else
-	{
-		std::cout << "Validation layer not supported" << std::endl;
-		return (false);
-	}
 }
 
 bool pstrpstr(char **haystack, char **needle)
