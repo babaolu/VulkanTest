@@ -28,9 +28,11 @@ class HelloTriangleApp
 	GLFWwindow *window;
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT debugMessenger;
+	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
 	void createInstance();
 	void setupDebugMessenger();
+	void pickPhysicalDevice();
 
 	void initWindow();
 	void initVulkan();
@@ -69,6 +71,8 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 
 void populateDebugMessengerCreateInfo(
 	VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+
+bool isDeviceSuitable(VkPhysicalDevice);
 
 bool pstrpstr(char **, char **);
 
