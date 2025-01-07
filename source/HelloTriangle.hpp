@@ -15,6 +15,7 @@ const bool enableValidationLayers = true;
 
 #include <iostream>
 #include <vector>
+#include <map>
 #include <cstring>
 #include <stdexcept>
 #include <cstdlib>
@@ -73,6 +74,8 @@ void populateDebugMessengerCreateInfo(
 	VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 
 bool isDeviceSuitable(VkPhysicalDevice);
+
+int rateDeviceSuitability(VkPhysicalDevice);
 
 bool pstrpstr(char **, char **);
 

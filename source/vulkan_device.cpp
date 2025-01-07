@@ -14,15 +14,19 @@ void HelloTriangleApp::pickPhysicalDevice()
 	std::vector<VkPhysicalDevice> devices(deviceCount);
 	vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
+	// Using an ordered map to automatically sort in increasing order
+	std::multimap<int, VkPhysicalDevice> candidates;
 	for (const auto& device : devices)
 	{
-		if (isDeviceSuitable(device))
-		{
-			physicalDevice = device;
-			break;
-		}
+		int score = rateDeviceSuitability(device);
+		candidates.insert(std::make_pair(score, device));
 	}
-	if (physicalDevice == VK_NULL_HANDLE)
+
+	if (candidates.rbegin()->first > 0)
+	{
+		physicalDevice = candidates.rbegin()->second;
+		std::cout << "Physical device selected" << std::endl;
+	} else
 	{
 		throw std::runtime_error("Failed to find a suitable GPU!");
 	}
