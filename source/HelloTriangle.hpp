@@ -16,6 +16,7 @@ const bool enableValidationLayers = true;
 #include <iostream>
 #include <vector>
 #include <map>
+#include <optional>
 #include <cstring>
 #include <stdexcept>
 #include <cstdlib>
@@ -49,6 +50,16 @@ public:
 	}
 };
 
+struct QueueFamilyIndices
+{
+	std::optional<uint32_t> graphicsFamily;
+
+	bool isComplete()
+	{
+		return graphicsFamily.has_value();
+	}
+};
+
 std::vector<const char *> getRequiredExtensions();
 
 bool checkValidationLayerSupport();
@@ -76,6 +87,8 @@ void populateDebugMessengerCreateInfo(
 bool isDeviceSuitable(VkPhysicalDevice);
 
 int rateDeviceSuitability(VkPhysicalDevice);
+
+QueueFamilyIndices findQueueFamilies(VkPhysicalDevice);
 
 bool pstrpstr(char **, char **);
 
