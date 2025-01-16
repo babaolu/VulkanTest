@@ -19,8 +19,9 @@ int rateDeviceSuitability(VkPhysicalDevice device)
 	vkGetPhysicalDeviceProperties(device, &deviceProperties);
 	vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
-	int score = 0;
+	std::cout << "=> " << deviceProperties.deviceName << std::endl;
 
+	int score = 0;
 	QueueFamilyIndices indices = findQueueFamilies(device);
 
 	// Application can't function without geometry shaders

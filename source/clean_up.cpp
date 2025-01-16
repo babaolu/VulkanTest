@@ -2,6 +2,8 @@
 
 void HelloTriangleApp::cleanup()
 {
+	vkDestroyDevice(device, nullptr);
+
 	if (enableValidationLayers)
 	{
 		DestroyDebugUtilsMessengerEXT(instance, debugMessenger,

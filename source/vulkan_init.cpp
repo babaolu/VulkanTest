@@ -5,6 +5,7 @@ void HelloTriangleApp::initVulkan()
 	createInstance();
 	setupDebugMessenger();
 	pickPhysicalDevice();
+	createLogicalDevice();
 }
 
 void HelloTriangleApp::createInstance()
