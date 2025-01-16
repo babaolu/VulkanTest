@@ -4,6 +4,7 @@ void HelloTriangleApp::initVulkan()
 {
 	createInstance();
 	setupDebugMessenger();
+	createSurface();
 	pickPhysicalDevice();
 	createLogicalDevice();
 }
@@ -120,4 +121,14 @@ bool pstrpstr(char **haystack, char **needle)
 		if (!test) return (false);
 	}
 	return (true);
+}
+
+void HelloTriangleApp::createSurface()
+{
+	VkResult result = glfwCreateWindowSurface(instance, window, nullptr,
+						  &surface);
+	if (result != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to create window surface!");
+	}
 }

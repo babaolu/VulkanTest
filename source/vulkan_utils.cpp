@@ -12,7 +12,7 @@ bool isDeviceSuitable(VkPhysicalDevice device)
 		deviceFeatures.geometryShader;
 }
 
-int rateDeviceSuitability(VkPhysicalDevice device)
+int rateDeviceSuitability(VkPhysicalDevice device, VkSurfaceKHR surface)
 {
 	VkPhysicalDeviceProperties deviceProperties;
 	VkPhysicalDeviceFeatures deviceFeatures;
@@ -22,7 +22,7 @@ int rateDeviceSuitability(VkPhysicalDevice device)
 	std::cout << "=> " << deviceProperties.deviceName << std::endl;
 
 	int score = 0;
-	QueueFamilyIndices indices = findQueueFamilies(device);
+	QueueFamilyIndices indices = findQueueFamilies(device, surface);
 
 	// Application can't function without geometry shaders
 	if (!(deviceFeatures.geometryShader && indices.isComplete()))
@@ -42,7 +42,8 @@ int rateDeviceSuitability(VkPhysicalDevice device)
 	return score;
 }
 
-QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device)
+QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device,
+				     VkSurfaceKHR surface)
 {
 	QueueFamilyIndices indices;
 
@@ -55,11 +56,22 @@ QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device)
 	int i = 0;
 	for (const auto& queueFamily : queueFamilies)
 	{
+		if (indices.isComplete())
+			break;
+
 		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 		{
 			indices.graphicsFamily = i;
-			break;
 		}
+
+		VkBool32 presentSupport = false;
+		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface,
+						     &presentSupport);
+		if (presentSupport)
+		{
+			indices.presentFamily = i;
+		}
+
 		i++;
 	}
 

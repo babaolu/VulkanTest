@@ -16,6 +16,7 @@ const bool enableValidationLayers = true;
 #include <iostream>
 #include <vector>
 #include <map>
+#include <set>
 #include <optional>
 #include <cstring>
 #include <stdexcept>
@@ -29,13 +30,16 @@ class HelloTriangleApp
 {
 	GLFWwindow *window;
 	VkInstance instance;
+	VkSurfaceKHR surface;
 	VkDebugUtilsMessengerEXT debugMessenger;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkDevice device;
 	VkQueue graphicsQueue;
+	VkQueue presentQueue;
 
 	void createInstance();
 	void setupDebugMessenger();
+	void createSurface();
 	void pickPhysicalDevice();
 	void createLogicalDevice();
 
@@ -56,10 +60,11 @@ public:
 struct QueueFamilyIndices
 {
 	std::optional<uint32_t> graphicsFamily;
+	std::optional<uint32_t> presentFamily;
 
 	bool isComplete()
 	{
-		return graphicsFamily.has_value();
+		return graphicsFamily.has_value() && presentFamily.has_value();
 	}
 };
 
@@ -89,9 +94,9 @@ void populateDebugMessengerCreateInfo(
 
 bool isDeviceSuitable(VkPhysicalDevice);
 
-int rateDeviceSuitability(VkPhysicalDevice);
+int rateDeviceSuitability(VkPhysicalDevice, VkSurfaceKHR);
 
-QueueFamilyIndices findQueueFamilies(VkPhysicalDevice);
+QueueFamilyIndices findQueueFamilies(VkPhysicalDevice, VkSurfaceKHR);
 
 bool pstrpstr(char **, char **);
 

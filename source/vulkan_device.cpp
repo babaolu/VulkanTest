@@ -18,7 +18,7 @@ void HelloTriangleApp::pickPhysicalDevice()
 	std::multimap<int, VkPhysicalDevice> candidates;
 	for (const auto& device : devices)
 	{
-		int score = rateDeviceSuitability(device);
+		int score = rateDeviceSuitability(device, surface);
 		candidates.insert(std::make_pair(score, device));
 	}
 
@@ -34,20 +34,31 @@ void HelloTriangleApp::pickPhysicalDevice()
 
 void HelloTriangleApp::createLogicalDevice()
 {
-	QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+	QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface);
 	float queuePriority = 1.0f;
 	VkPhysicalDeviceFeatures deviceFeatures{};
 
-	VkDeviceQueueCreateInfo queueCreateInfo{};
-	queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-	queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
-	queueCreateInfo.queueCount = 1;
-	queueCreateInfo.pQueuePriorities = &queuePriority;
+	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+	std::set<uint32_t> uniqueQueueFamilies = {
+		indices.graphicsFamily.value(), indices.presentFamily.value()
+	};
+
+	for (uint32_t queueFamily : uniqueQueueFamilies)
+	{
+		VkDeviceQueueCreateInfo queueCreateInfo{};
+		queueCreateInfo.sType =
+			VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueCreateInfo.queueFamilyIndex = queueFamily;
+		queueCreateInfo.queueCount = 1;
+		queueCreateInfo.pQueuePriorities = &queuePriority;
+		queueCreateInfos.push_back(queueCreateInfo);
+	}
 
 	VkDeviceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	createInfo.pQueueCreateInfos = &queueCreateInfo;
-	createInfo.queueCreateInfoCount = 1;
+	createInfo.pQueueCreateInfos = queueCreateInfos.data();
+	createInfo.queueCreateInfoCount =
+		static_cast<uint32_t>(queueCreateInfos.size());
 
 	createInfo.pEnabledFeatures = &deviceFeatures;
 	createInfo.enabledExtensionCount = 0;
@@ -70,4 +81,6 @@ void HelloTriangleApp::createLogicalDevice()
 	}
 	vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0,
 			 &graphicsQueue);
+	vkGetDeviceQueue(device, indices.presentFamily.value(), 0,
+			 &presentQueue);
 }
