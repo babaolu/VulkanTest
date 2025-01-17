@@ -23,9 +23,11 @@ int rateDeviceSuitability(VkPhysicalDevice device, VkSurfaceKHR surface)
 
 	int score = 0;
 	QueueFamilyIndices indices = findQueueFamilies(device, surface);
+	bool extensionsSupported = checkDeviceExtensionSupport(device);
 
 	// Application can't function without geometry shaders
-	if (!(deviceFeatures.geometryShader && indices.isComplete()))
+	if (!(deviceFeatures.geometryShader && indices.isComplete() &&
+	      extensionsSupported))
 	{
 		return 0;
 	}

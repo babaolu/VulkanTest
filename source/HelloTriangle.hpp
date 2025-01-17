@@ -26,6 +26,10 @@ const std::vector<const char *> validationLayers = {
 	"VK_LAYER_KHRONOS_validation", nullptr
 };
 
+const std::vector<const char *> deviceExtensions = {
+	VK_KHR_SWAPCHAIN_EXTENSION_NAME, nullptr
+};
+
 class HelloTriangleApp
 {
 	GLFWwindow *window;
@@ -93,6 +97,8 @@ void populateDebugMessengerCreateInfo(
 	VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 
 bool isDeviceSuitable(VkPhysicalDevice);
+
+bool checkDeviceExtensionSupport(VkPhysicalDevice);
 
 int rateDeviceSuitability(VkPhysicalDevice, VkSurfaceKHR);
 

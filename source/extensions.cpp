@@ -41,3 +41,27 @@ std::vector<const char *> getRequiredExtensions()
 	}
 	return (extensions);
 }
+
+bool checkDeviceExtensionSupport(VkPhysicalDevice device)
+{
+	uint32_t extensionCount;
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount,
+					     nullptr);
+
+	std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount,
+					     availableExtensions.data());
+	char *availableExtensionNames[extensionCount + 1];
+	availableExtensionNames[extensionCount] = nullptr;
+
+	std::cout << "Available device extension support\n";
+	for (uint32_t iter = 0; iter < extensionCount; iter++)
+	{
+		availableExtensionNames[iter] =
+			availableExtensions[iter].extensionName;
+		std::cout << '\t' << availableExtensionNames[iter] << '\n';
+	}
+
+	return pstrpstr(availableExtensionNames,
+			const_cast<char **>(deviceExtensions.data()));
+}
