@@ -72,6 +72,13 @@ struct QueueFamilyIndices
 	}
 };
 
+struct SwapChainSupportDetails
+{
+	VkSurfaceCapabilitiesKHR capabilities;
+	std::vector<VkSurfaceFormatKHR> formats;
+	std::vector<VkPresentModeKHR> presentModes;
+};
+
 std::vector<const char *> getRequiredExtensions();
 
 bool checkValidationLayerSupport();
@@ -103,6 +110,8 @@ bool checkDeviceExtensionSupport(VkPhysicalDevice);
 int rateDeviceSuitability(VkPhysicalDevice, VkSurfaceKHR);
 
 QueueFamilyIndices findQueueFamilies(VkPhysicalDevice, VkSurfaceKHR);
+
+SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice, VkSurfaceKHR);
 
 bool pstrpstr(char **, char **);
 

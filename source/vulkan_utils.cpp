@@ -23,11 +23,20 @@ int rateDeviceSuitability(VkPhysicalDevice device, VkSurfaceKHR surface)
 
 	int score = 0;
 	QueueFamilyIndices indices = findQueueFamilies(device, surface);
+	bool swapChainAdequate = false;
 	bool extensionsSupported = checkDeviceExtensionSupport(device);
+
+	if (extensionsSupported)
+	{
+		SwapChainSupportDetails swapChainSupport =
+			querySwapChainSupport(device, surface);
+		swapChainAdequate = !(swapChainSupport.formats.empty() ||
+				      swapChainSupport.presentModes.empty());
+	}
 
 	// Application can't function without geometry shaders
 	if (!(deviceFeatures.geometryShader && indices.isComplete() &&
-	      extensionsSupported))
+	      swapChainAdequate))
 	{
 		return 0;
 	}
@@ -78,4 +87,36 @@ QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device,
 	}
 
 	return indices;
+}
+
+SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device,
+					      VkSurfaceKHR surface)
+{
+	SwapChainSupportDetails details;
+	uint32_t formatCount, presentModeCount;
+
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface,
+						  &details.capabilities);
+
+	vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount,
+					     nullptr);
+	if (formatCount != 0)
+	{
+		details.formats.resize(formatCount);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface,
+						     &formatCount,
+						     details.formats.data());
+	}
+
+	vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface,
+						  &presentModeCount, nullptr);
+	if (presentModeCount != 0)
+	{
+		details.presentModes.resize(presentModeCount);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface,
+							   &presentModeCount,
+							   details.presentModes.data());
+	}
+
+	return details;
 }
