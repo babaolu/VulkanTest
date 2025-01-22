@@ -102,7 +102,8 @@ void HelloTriangleApp::createSwapChain()
 		createInfo.queueFamilyIndexCount = 0;  // Optional
 		createInfo.pQueueFamilyIndices = nullptr; // Optional
 	}
-	createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+	createInfo.preTransform =
+		swapChainSupport.capabilities.currentTransform;
 	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 	createInfo.presentMode = presentMode;
 	createInfo.clipped = VK_TRUE;
@@ -114,4 +115,12 @@ void HelloTriangleApp::createSwapChain()
 	{
 		throw std::runtime_error("Failed to create swap chain!");
 	}
+
+	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
+	swapChainImages.resize(imageCount);
+	vkGetSwapchainImagesKHR(device, swapChain, &imageCount,
+				swapChainImages.data());
+
+	swapChainImageFormat = surfaceFormat.format;
+	swapChainExtent = extent;
 }
