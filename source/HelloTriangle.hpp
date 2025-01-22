@@ -21,6 +21,9 @@ const bool enableValidationLayers = true;
 #include <cstring>
 #include <stdexcept>
 #include <cstdlib>
+#include <algorithm>
+#include <limits>
+
 
 const std::vector<const char *> validationLayers = {
 	"VK_LAYER_KHRONOS_validation", nullptr
@@ -40,12 +43,16 @@ class HelloTriangleApp
 	VkDevice device;
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
+	VkSwapchainKHR swapChain;
 
 	void createInstance();
 	void setupDebugMessenger();
 	void createSurface();
 	void pickPhysicalDevice();
 	void createLogicalDevice();
+	VkExtent2D chooseSwapExtent(
+		const VkSurfaceCapabilitiesKHR& capabilities);
+	void createSwapChain();
 
 	void initWindow();
 	void initVulkan();
@@ -114,5 +121,12 @@ QueueFamilyIndices findQueueFamilies(VkPhysicalDevice, VkSurfaceKHR);
 SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice, VkSurfaceKHR);
 
 bool pstrpstr(char **, char **);
+
+VkSurfaceFormatKHR chooseSwapSurfaceFormat(
+	const std::vector<VkSurfaceFormatKHR>&);
+
+VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>&);
+
+
 
 #endif //HELLO_TRIANGLE_HPP

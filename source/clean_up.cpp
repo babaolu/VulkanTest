@@ -2,6 +2,8 @@
 
 void HelloTriangleApp::cleanup()
 {
+	vkDestroySwapchainKHR(device, swapChain, nullptr);
+
 	vkDestroyDevice(device, nullptr);
 
 	vkDestroySurfaceKHR(instance, surface, nullptr);
