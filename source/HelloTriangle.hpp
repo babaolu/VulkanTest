@@ -14,6 +14,7 @@ const bool enableValidationLayers = true;
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <map>
 #include <set>
@@ -47,6 +48,7 @@ class HelloTriangleApp
 	std::vector<VkImage> swapChainImages;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
+	std::vector<VkImageView> swapChainImageViews;
 
 	void createInstance();
 	void setupDebugMessenger();
@@ -56,6 +58,8 @@ class HelloTriangleApp
 	VkExtent2D chooseSwapExtent(
 		const VkSurfaceCapabilitiesKHR& capabilities);
 	void createSwapChain();
+	void createImageViews();
+	void createGraphicsPipeline();
 
 	void initWindow();
 	void initVulkan();

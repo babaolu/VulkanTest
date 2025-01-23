@@ -8,6 +8,7 @@ void HelloTriangleApp::initVulkan()
 	pickPhysicalDevice();
 	createLogicalDevice();
 	createSwapChain();
+	createImageViews();
 }
 
 void HelloTriangleApp::createInstance()

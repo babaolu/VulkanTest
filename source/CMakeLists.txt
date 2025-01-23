@@ -8,6 +8,7 @@ add_executable(VulkanTest main.cpp
 	vulkan_init.cpp
 	vulkan_device.cpp
 	vulkan_swap.cpp
+	vulkan_image.cpp
 	extensions.cpp
 	vulkan_debug.cpp
 	vulkan_utils.cpp
