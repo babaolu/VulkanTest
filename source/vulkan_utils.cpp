@@ -120,3 +120,23 @@ SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device,
 
 	return details;
 }
+
+std::vector<char> readFile(const std::string& filename)
+{
+	std::ifstream file(filename, std::ios::ate | std::ios::binary);
+
+	std::cout << "CWD: " << std::filesystem::current_path() << std::endl;
+	if (!file.is_open())
+	{
+		throw std::runtime_error("Failed to open file!");
+	}
+
+	size_t fileSize = (size_t) file.tellg();
+	std::cout << "File size: " << fileSize << std::endl;
+	std::vector<char> buffer(fileSize);
+	file.seekg(0);
+	file.read(buffer.data(), fileSize);
+	file.close();
+
+	return buffer;
+}

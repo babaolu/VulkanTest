@@ -15,6 +15,7 @@ const bool enableValidationLayers = true;
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <vector>
 #include <map>
 #include <set>
@@ -24,6 +25,7 @@ const bool enableValidationLayers = true;
 #include <cstdlib>
 #include <algorithm>
 #include <limits>
+#include <filesystem>
 
 
 const std::vector<const char *> validationLayers = {
@@ -49,6 +51,9 @@ class HelloTriangleApp
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
 	std::vector<VkImageView> swapChainImageViews;
+	VkRenderPass renderPass;
+	VkPipelineLayout pipelineLayout;
+	VkPipeline graphicsPipeline;
 
 	void createInstance();
 	void setupDebugMessenger();
@@ -59,7 +64,10 @@ class HelloTriangleApp
 		const VkSurfaceCapabilitiesKHR& capabilities);
 	void createSwapChain();
 	void createImageViews();
+	VkShaderModule createShaderModule(const std::vector<char>&);
+	void createRenderPass();
 	void createGraphicsPipeline();
+
 
 	void initWindow();
 	void initVulkan();
@@ -129,11 +137,11 @@ SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice, VkSurfaceKHR);
 
 bool pstrpstr(char **, char **);
 
+std::vector<char> readFile(const std::string&);
+
 VkSurfaceFormatKHR chooseSwapSurfaceFormat(
 	const std::vector<VkSurfaceFormatKHR>&);
 
 VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>&);
-
-
 
 #endif //HELLO_TRIANGLE_HPP
