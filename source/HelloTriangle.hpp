@@ -55,6 +55,8 @@ class HelloTriangleApp
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
+	VkCommandPool commandPool;
+	VkCommandBuffer commandBuffer;
 
 	void createInstance();
 	void setupDebugMessenger();
@@ -69,6 +71,9 @@ class HelloTriangleApp
 	void createRenderPass();
 	void createGraphicsPipeline();
 	void createFramebuffers();
+	void createCommandPool();
+	void createCommandBuffer();
+	void recordCommandBuffer(VkCommandBuffer, uint32_t);
 
 
 	void initWindow();

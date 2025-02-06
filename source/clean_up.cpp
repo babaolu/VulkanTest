@@ -2,6 +2,8 @@
 
 void HelloTriangleApp::cleanup()
 {
+	vkDestroyCommandPool(device, commandPool, nullptr);
+
 	for (auto framebuffer : swapChainFramebuffers)
 	{
 		vkDestroyFramebuffer(device, framebuffer, nullptr);
