@@ -54,6 +54,7 @@ class HelloTriangleApp
 	VkRenderPass renderPass;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
+	std::vector<VkFramebuffer> swapChainFramebuffers;
 
 	void createInstance();
 	void setupDebugMessenger();
@@ -67,6 +68,7 @@ class HelloTriangleApp
 	VkShaderModule createShaderModule(const std::vector<char>&);
 	void createRenderPass();
 	void createGraphicsPipeline();
+	void createFramebuffers();
 
 
 	void initWindow();

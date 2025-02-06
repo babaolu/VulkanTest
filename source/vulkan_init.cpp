@@ -11,6 +11,7 @@ void HelloTriangleApp::initVulkan()
 	createImageViews();
 	createRenderPass();
 	createGraphicsPipeline();
+	createFramebuffers();
 }
 
 void HelloTriangleApp::createInstance()

@@ -32,7 +32,7 @@ void HelloTriangleApp::createImageViews()
 		{
 			std::ostringstream os;
 			os << "Failed to create Image " << i << "of the "
-			   << swapChainImages.size() << "Images";
+			   << swapChainImages.size() << "Images!";
 			throw std::runtime_error(os.str());
 		}
 		if (enableValidationLayers)
@@ -75,5 +75,39 @@ void HelloTriangleApp::createRenderPass()
 	if (result != VK_SUCCESS)
 	{
 		throw std::runtime_error("Failed to create render pass!");
+	}
+}
+
+
+void HelloTriangleApp::createFramebuffers()
+{
+	swapChainFramebuffers.resize(swapChainImageViews.size());
+	for (size_t i = 0; i < swapChainImageViews.size(); i++)
+	{
+		VkImageView attachments[] = { swapChainImageViews[i] };
+		VkFramebufferCreateInfo framebufferInfo{};
+		framebufferInfo.sType =
+			VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		framebufferInfo.renderPass = renderPass;
+		framebufferInfo.attachmentCount = 1;
+		framebufferInfo.pAttachments = attachments;
+		framebufferInfo.width = swapChainExtent.width;
+		framebufferInfo.height = swapChainExtent.height;
+		framebufferInfo.layers = 1;
+
+		VkResult result = vkCreateFramebuffer(device, &framebufferInfo,
+					       nullptr,
+					       &swapChainFramebuffers[i]);
+		if (result != VK_SUCCESS)
+		{
+			std::ostringstream os;
+			os << "Failed to create Framebuffer " << i << "of the "
+			   << swapChainFramebuffers.size() << "Framebuffers!";
+			std::runtime_error(os.str());
+		}
+		if (enableValidationLayers)
+		{
+			std::cout << "Framebuffer["<< i << "] created!\n";
+		}
 	}
 }
