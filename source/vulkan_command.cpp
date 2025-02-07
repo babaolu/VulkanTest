@@ -90,3 +90,25 @@ void HelloTriangleApp::recordCommandBuffer(VkCommandBuffer commandBuffer,
 		throw std::runtime_error("Failed to record command buffer!");
 	}
 }
+
+void HelloTriangleApp::createSyncObjects()
+{
+	VkSemaphoreCreateInfo semaphoreInfo{};
+	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+	VkFenceCreateInfo fenceInfo{};
+	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+	VkResult result1 = vkCreateSemaphore(device, &semaphoreInfo, nullptr,
+					     &imageAvailableSemaphore),
+		result2 = vkCreateSemaphore(device, &semaphoreInfo, nullptr,
+					    &renderFinishedSemaphore),
+		result3 = vkCreateFence(device, &fenceInfo, nullptr,
+					&inFlightFence);
+	if (result1 != VK_SUCCESS || result2 != VK_SUCCESS ||
+	    result3 != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to create semaphores!");
+	}
+}

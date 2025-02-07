@@ -14,6 +14,7 @@ void HelloTriangleApp::initVulkan()
 	createFramebuffers();
 	createCommandPool();
 	createCommandBuffer();
+	createSyncObjects();
 }
 
 void HelloTriangleApp::createInstance()

@@ -57,6 +57,9 @@ class HelloTriangleApp
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 	VkCommandPool commandPool;
 	VkCommandBuffer commandBuffer;
+	VkSemaphore imageAvailableSemaphore;
+	VkSemaphore renderFinishedSemaphore;
+	VkFence inFlightFence;
 
 	void createInstance();
 	void setupDebugMessenger();
@@ -74,6 +77,8 @@ class HelloTriangleApp
 	void createCommandPool();
 	void createCommandBuffer();
 	void recordCommandBuffer(VkCommandBuffer, uint32_t);
+	void createSyncObjects();
+	void drawFrame();
 
 
 	void initWindow();

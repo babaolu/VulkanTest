@@ -2,6 +2,10 @@
 
 void HelloTriangleApp::cleanup()
 {
+	vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
+	vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
+	vkDestroyFence(device, inFlightFence, nullptr);
+
 	vkDestroyCommandPool(device, commandPool, nullptr);
 
 	for (auto framebuffer : swapChainFramebuffers)
