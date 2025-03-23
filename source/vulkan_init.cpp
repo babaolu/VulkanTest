@@ -13,7 +13,7 @@ void HelloTriangleApp::initVulkan()
 	createGraphicsPipeline();
 	createFramebuffers();
 	createCommandPool();
-	createCommandBuffer();
+	createCommandBuffers();
 	createSyncObjects();
 }
 

@@ -36,6 +36,8 @@ const std::vector<const char *> deviceExtensions = {
 	VK_KHR_SWAPCHAIN_EXTENSION_NAME, nullptr
 };
 
+const int MAX_FRAMES_IN_FLIGHT = 2;
+
 class HelloTriangleApp
 {
 	GLFWwindow *window;
@@ -56,10 +58,11 @@ class HelloTriangleApp
 	VkPipeline graphicsPipeline;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 	VkCommandPool commandPool;
-	VkCommandBuffer commandBuffer;
-	VkSemaphore imageAvailableSemaphore;
-	VkSemaphore renderFinishedSemaphore;
-	VkFence inFlightFence;
+	std::vector<VkCommandBuffer> commandBuffers;
+	std::vector<VkSemaphore> imageAvailableSemaphores;
+	std::vector<VkSemaphore> renderFinishedSemaphores;
+	std::vector<VkFence> inFlightFences;
+	uint32_t currentFrame = 0;
 
 	void createInstance();
 	void setupDebugMessenger();
@@ -75,7 +78,7 @@ class HelloTriangleApp
 	void createGraphicsPipeline();
 	void createFramebuffers();
 	void createCommandPool();
-	void createCommandBuffer();
+	void createCommandBuffers();
 	void recordCommandBuffer(VkCommandBuffer, uint32_t);
 	void createSyncObjects();
 	void drawFrame();

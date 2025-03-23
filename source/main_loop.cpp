@@ -12,36 +12,38 @@ void HelloTriangleApp::mainLoop()
 
 void HelloTriangleApp::drawFrame()
 {
-	vkWaitForFences(device, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
-	vkResetFences(device, 1, &inFlightFence);
+	vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE,
+			UINT64_MAX);
+	vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
 	uint32_t imageIndex;
 	vkAcquireNextImageKHR(device, swapChain, UINT64_MAX,
-			      imageAvailableSemaphore, VK_NULL_HANDLE,
-			      &imageIndex);
+			      imageAvailableSemaphores[currentFrame],
+			      VK_NULL_HANDLE, &imageIndex);
 
-	vkResetCommandBuffer(commandBuffer, 0);
+	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 
-	recordCommandBuffer(commandBuffer, imageIndex);
+	recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
 
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-	VkSemaphore waitSemaphores[] = {imageAvailableSemaphore};
+	VkSemaphore waitSemaphores[] = {imageAvailableSemaphores[currentFrame]};
 	VkPipelineStageFlags waitStages[] = {
 		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
 	submitInfo.waitSemaphoreCount = 1;
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitStages;
 	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &commandBuffer;
+	submitInfo.pCommandBuffers = &commandBuffers[currentFrame];
 
-	VkSemaphore signalSemaphores[] = {renderFinishedSemaphore};
+	VkSemaphore signalSemaphores[] =
+		{renderFinishedSemaphores[currentFrame]};
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
 	VkResult result = vkQueueSubmit(graphicsQueue, 1, &submitInfo,
-					inFlightFence);
+					inFlightFences[currentFrame]);
 	if (result != VK_SUCCESS)
 	{
 		throw std::runtime_error("Failed to submit draw command "
@@ -64,4 +66,5 @@ void HelloTriangleApp::drawFrame()
 	{
 		throw std::runtime_error("Failed to present!");
 	}
+	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }

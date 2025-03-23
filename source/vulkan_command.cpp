@@ -18,16 +18,18 @@ void HelloTriangleApp::createCommandPool()
 	}
 }
 
-void HelloTriangleApp::createCommandBuffer()
+void HelloTriangleApp::createCommandBuffers()
 {
+	commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
 	VkCommandBufferAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	allocInfo.commandPool = commandPool;
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	allocInfo.commandBufferCount = 1;
+	allocInfo.commandBufferCount = (uint32_t) commandBuffers.size();
 
 	VkResult result = vkAllocateCommandBuffers(device, &allocInfo,
-						   &commandBuffer);
+						   commandBuffers.data());
 	if (result != VK_SUCCESS)
 	{
 		throw std::runtime_error("Failed to allocate command buffers!");
@@ -93,6 +95,10 @@ void HelloTriangleApp::recordCommandBuffer(VkCommandBuffer commandBuffer,
 
 void HelloTriangleApp::createSyncObjects()
 {
+	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+	renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+	inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+
 	VkSemaphoreCreateInfo semaphoreInfo{};
 	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
@@ -100,15 +106,22 @@ void HelloTriangleApp::createSyncObjects()
 	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-	VkResult result1 = vkCreateSemaphore(device, &semaphoreInfo, nullptr,
-					     &imageAvailableSemaphore),
-		result2 = vkCreateSemaphore(device, &semaphoreInfo, nullptr,
-					    &renderFinishedSemaphore),
-		result3 = vkCreateFence(device, &fenceInfo, nullptr,
-					&inFlightFence);
-	if (result1 != VK_SUCCESS || result2 != VK_SUCCESS ||
-	    result3 != VK_SUCCESS)
+	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 	{
-		throw std::runtime_error("Failed to create semaphores!");
+		VkResult result1 = vkCreateSemaphore(device, &semaphoreInfo,
+						     nullptr,
+						     &imageAvailableSemaphores[i]),
+			result2 = vkCreateSemaphore(device, &semaphoreInfo,
+						    nullptr,
+						    &renderFinishedSemaphores[i]),
+			result3 = vkCreateFence(device, &fenceInfo, nullptr,
+						&inFlightFences[i]);
+		if (result1 != VK_SUCCESS || result2 != VK_SUCCESS ||
+		    result3 != VK_SUCCESS)
+		{
+			throw std::runtime_error("Failed to create "
+						 "synchronization objects for "
+						 "a frame!");
+		}
 	}
 }
