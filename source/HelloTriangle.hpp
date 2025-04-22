@@ -63,6 +63,7 @@ class HelloTriangleApp
 	std::vector<VkSemaphore> renderFinishedSemaphores;
 	std::vector<VkFence> inFlightFences;
 	uint32_t currentFrame = 0;
+	bool framebufferResized = false;
 
 	void createInstance();
 	void setupDebugMessenger();
@@ -72,6 +73,7 @@ class HelloTriangleApp
 	VkExtent2D chooseSwapExtent(
 		const VkSurfaceCapabilitiesKHR& capabilities);
 	void createSwapChain();
+	void recreateSwapChain();
 	void createImageViews();
 	VkShaderModule createShaderModule(const std::vector<char>&);
 	void createRenderPass();
@@ -82,6 +84,9 @@ class HelloTriangleApp
 	void recordCommandBuffer(VkCommandBuffer, uint32_t);
 	void createSyncObjects();
 	void drawFrame();
+	void cleanupSwapChain();
+
+	static void framebufferResizeCallback(GLFWwindow *, int, int);
 
 
 	void initWindow();

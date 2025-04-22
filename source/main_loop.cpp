@@ -14,12 +14,22 @@ void HelloTriangleApp::drawFrame()
 {
 	vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE,
 			UINT64_MAX);
-	vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
 	uint32_t imageIndex;
-	vkAcquireNextImageKHR(device, swapChain, UINT64_MAX,
-			      imageAvailableSemaphores[currentFrame],
-			      VK_NULL_HANDLE, &imageIndex);
+
+	VkResult result = vkAcquireNextImageKHR(device, swapChain, UINT64_MAX,
+						imageAvailableSemaphores[currentFrame],
+						VK_NULL_HANDLE, &imageIndex);
+	if (result == VK_ERROR_OUT_OF_DATE_KHR)
+	{
+		recreateSwapChain();
+		return;
+	} else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+	{
+		throw std::runtime_error("Failed to acquire swap chain image!");
+	}
+
+	vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
 	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 
@@ -42,7 +52,7 @@ void HelloTriangleApp::drawFrame()
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
-	VkResult result = vkQueueSubmit(graphicsQueue, 1, &submitInfo,
+	result = vkQueueSubmit(graphicsQueue, 1, &submitInfo,
 					inFlightFences[currentFrame]);
 	if (result != VK_SUCCESS)
 	{
@@ -62,9 +72,14 @@ void HelloTriangleApp::drawFrame()
 	presentInfo.pResults = nullptr;  // Optional
 
 	result = vkQueuePresentKHR(presentQueue, &presentInfo);
-	if (result != VK_SUCCESS)
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
+		framebufferResized)
 	{
-		throw std::runtime_error("Failed to present!");
+		framebufferResized = false;
+		recreateSwapChain();
+	} else if (result != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to present swap chain image!");
 	}
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
