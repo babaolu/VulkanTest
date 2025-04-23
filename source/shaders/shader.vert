@@ -2,20 +2,18 @@
 
 layout(location = 0) out vec3 fragColor;
 
-vec2 positions[3] = vec2[](
-     vec2(0.0, -0.5),
-     vec2(0.5, 0.5),
-     vec2(-0.5, 0.5)
-);
-
-vec3 colors[3] = vec3[](
-     vec3(1.0, 0.0, 0.0),
-     vec3(0.0, 1.0, 0.0),
-     vec3(0.0, 0.0, 1.0)
-);
-
 void main()
 {
-	gl_Position = vec4(positions[gl_VertexIndex], 0, 1);
-	fragColor = colors[gl_VertexIndex];
+	if (gl_VertexIndex == 0)
+	{
+		gl_Position = vec4(0, 0, 0, 1);
+		fragColor = vec3(1.0, 1.0, 1.0);
+	} else
+	{
+		float angle = radians((gl_VertexIndex - 1) * 0.5);
+		gl_Position = vec4(0.5 * sin(angle), 0.5 * cos(angle), 0, 1);
+
+		float col_pos = radians((gl_VertexIndex - 1) / 8.0);
+		fragColor = vec3(cos(col_pos), tan(col_pos), sin(col_pos));
+	}
 }
