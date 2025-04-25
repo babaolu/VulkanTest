@@ -58,7 +58,7 @@ void HelloTriangleApp::recordCommandBuffer(VkCommandBuffer commandBuffer,
 	renderPassInfo.renderArea.offset = {0, 0};
 	renderPassInfo.renderArea.extent = swapChainExtent;
 
-	VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+	VkClearValue clearColor = {{{0.2f, 0.2f, 0.2f, 1.0f}}};
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
 
@@ -82,7 +82,7 @@ void HelloTriangleApp::recordCommandBuffer(VkCommandBuffer commandBuffer,
 	scissor.extent = swapChainExtent;
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-	vkCmdDraw(commandBuffer, 720, 1, 0, 0);
+	vkCmdDraw(commandBuffer, 8, 1, 0, 0);
 
 	vkCmdEndRenderPass(commandBuffer);
 
