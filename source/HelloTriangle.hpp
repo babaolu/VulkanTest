@@ -12,11 +12,13 @@ const bool enableValidationLayers = true;
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <array>
 #include <map>
 #include <set>
 #include <optional>
@@ -58,6 +60,8 @@ class HelloTriangleApp
 	VkPipeline graphicsPipeline;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 	VkCommandPool commandPool;
+	VkBuffer vertexBuffer;
+	VkDeviceMemory vertexBufferMemory;
 	std::vector<VkCommandBuffer> commandBuffers;
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;
@@ -80,6 +84,7 @@ class HelloTriangleApp
 	void createGraphicsPipeline();
 	void createFramebuffers();
 	void createCommandPool();
+	void createVertexBuffer();
 	void createCommandBuffers();
 	void recordCommandBuffer(VkCommandBuffer, uint32_t);
 	void createSyncObjects();
@@ -119,6 +124,23 @@ struct SwapChainSupportDetails
 	VkSurfaceCapabilitiesKHR capabilities;
 	std::vector<VkSurfaceFormatKHR> formats;
 	std::vector<VkPresentModeKHR> presentModes;
+};
+
+struct Vertex
+{
+	glm::vec2 pos;
+	glm::vec3 color;
+
+	static VkVertexInputBindingDescription getBindingDescription();
+
+	static std::array<VkVertexInputAttributeDescription, 2>
+	getAttributeDescriptions();
+};
+
+const std::vector<Vertex> vertices = {
+	{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+	{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+	{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 };
 
 std::vector<const char *> getRequiredExtensions();
@@ -163,5 +185,7 @@ VkSurfaceFormatKHR chooseSwapSurfaceFormat(
 	const std::vector<VkSurfaceFormatKHR>&);
 
 VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>&);
+
+uint32_t findMemoryType(VkPhysicalDevice, uint32_t, VkMemoryPropertyFlags);
 
 #endif //HELLO_TRIANGLE_HPP
