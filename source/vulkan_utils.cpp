@@ -1,35 +1,35 @@
 #include "HelloTriangle.hpp"
 
-bool isDeviceSuitable(VkPhysicalDevice device)
+bool isDeviceSuitable(VkPhysicalDevice physicalDevice)
 {
 	VkPhysicalDeviceProperties deviceProperties;
 	VkPhysicalDeviceFeatures deviceFeatures;
-	vkGetPhysicalDeviceProperties(device, &deviceProperties);
-	vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+	vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+	vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
 
 	return deviceProperties.deviceType ==
 		VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
 		deviceFeatures.geometryShader;
 }
 
-int rateDeviceSuitability(VkPhysicalDevice device, VkSurfaceKHR surface)
+int rateDeviceSuitability(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
 {
 	VkPhysicalDeviceProperties deviceProperties;
 	VkPhysicalDeviceFeatures deviceFeatures;
-	vkGetPhysicalDeviceProperties(device, &deviceProperties);
-	vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+	vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+	vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
 
 	std::cout << "=> " << deviceProperties.deviceName << std::endl;
 
 	int score = 0;
-	QueueFamilyIndices indices = findQueueFamilies(device, surface);
+	QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface);
 	bool swapChainAdequate = false;
-	bool extensionsSupported = checkDeviceExtensionSupport(device);
+	bool extensionsSupported = checkDeviceExtensionSupport(physicalDevice);
 
 	if (extensionsSupported)
 	{
 		SwapChainSupportDetails swapChainSupport =
-			querySwapChainSupport(device, surface);
+			querySwapChainSupport(physicalDevice, surface);
 		swapChainAdequate = !(swapChainSupport.formats.empty() ||
 				      swapChainSupport.presentModes.empty());
 	}
@@ -53,16 +53,16 @@ int rateDeviceSuitability(VkPhysicalDevice device, VkSurfaceKHR surface)
 	return score;
 }
 
-QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device,
+QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice,
 				     VkSurfaceKHR surface)
 {
 	QueueFamilyIndices indices;
 
 	uint32_t queueFamilyCount = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount,
+	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount,
 						 nullptr);
 	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount,
+	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount,
 						 queueFamilies.data());
 	int i = 0;
 	for (const auto& queueFamily : queueFamilies)
@@ -76,7 +76,7 @@ QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device,
 		}
 
 		VkBool32 presentSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface,
+		vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface,
 						     &presentSupport);
 		if (presentSupport)
 		{
@@ -89,31 +89,31 @@ QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device,
 	return indices;
 }
 
-SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device,
+SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physicalDevice,
 					      VkSurfaceKHR surface)
 {
 	SwapChainSupportDetails details;
 	uint32_t formatCount, presentModeCount;
 
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface,
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface,
 						  &details.capabilities);
 
-	vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount,
+	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount,
 					     nullptr);
 	if (formatCount != 0)
 	{
 		details.formats.resize(formatCount);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface,
+		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface,
 						     &formatCount,
 						     details.formats.data());
 	}
 
-	vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface,
+	vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface,
 						  &presentModeCount, nullptr);
 	if (presentModeCount != 0)
 	{
 		details.presentModes.resize(presentModeCount);
-		vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface,
+		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface,
 							   &presentModeCount,
 							   details.presentModes.data());
 	}

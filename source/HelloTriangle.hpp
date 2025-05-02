@@ -90,6 +90,9 @@ class HelloTriangleApp
 	void createSyncObjects();
 	void drawFrame();
 	void cleanupSwapChain();
+	void createBuffer(VkDeviceSize, VkBufferUsageFlags,
+			  VkMemoryPropertyFlags, VkBuffer&, VkDeviceMemory&);
+	void copyBuffer(VkBuffer, VkBuffer, VkDeviceSize);
 
 	static void framebufferResizeCallback(GLFWwindow *, int, int);
 
