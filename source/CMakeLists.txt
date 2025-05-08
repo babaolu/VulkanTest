@@ -16,7 +16,7 @@ add_executable(VulkanTest main.cpp
 	vulkan_debug.cpp
 	vulkan_utils.cpp
 	vulkan_command.cpp
-	vulkan_vertex.cpp
+	vulkan_buffer.cpp
 	clean_up.cpp)
 
 target_link_libraries(VulkanTest -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi)
