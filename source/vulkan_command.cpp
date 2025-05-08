@@ -82,7 +82,7 @@ void HelloTriangleApp::recordCommandBuffer(VkCommandBuffer commandBuffer,
 	scissor.extent = swapChainExtent;
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-	vkCmdDraw(commandBuffer, 8, 1, 0, 0);
+	vkCmdDraw(commandBuffer, 721, 1, 0, 0);
 
 	vkCmdEndRenderPass(commandBuffer);
 
