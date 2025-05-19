@@ -9,11 +9,19 @@ void HelloTriangleApp::cleanup()
 		vkDestroySemaphore(device, renderFinishedSemaphores[i],
 				   nullptr);
 		vkDestroyFence(device, inFlightFences[i], nullptr);
+
+		vkDestroyBuffer(device, uniformBuffers[i], nullptr);
+
+		vkFreeMemory(device, uniformBuffersMemory[i], nullptr);
 	}
 
 	vkDestroyCommandPool(device, commandPool, nullptr);
 
 	cleanupSwapChain();
+
+	vkDestroyDescriptorPool(device, descriptorPool, nullptr);
+
+	vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
 
 	vkDestroyBuffer(device, indexBuffer, nullptr);
 	vkFreeMemory(device, indexBufferMemory, nullptr);

@@ -12,6 +12,7 @@ add_executable(VulkanTest main.cpp
 	vulkan_swap.cpp
 	vulkan_image.cpp
 	vulkan_pipeline.cpp
+	vulkan_descriptor.cpp
 	extensions.cpp
 	vulkan_debug.cpp
 	vulkan_utils.cpp

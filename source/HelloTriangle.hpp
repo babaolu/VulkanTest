@@ -11,8 +11,10 @@ const bool enableValidationLayers = true;
 #endif
 
 #define GLFW_INCLUDE_VULKAN
+#define GLM_FORCE_RADIANS
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
 #include <sstream>
@@ -28,6 +30,7 @@ const bool enableValidationLayers = true;
 #include <algorithm>
 #include <limits>
 #include <filesystem>
+#include <chrono>
 
 
 const std::vector<const char *> validationLayers = {
@@ -56,6 +59,11 @@ class HelloTriangleApp
 	VkExtent2D swapChainExtent;
 	std::vector<VkImageView> swapChainImageViews;
 	VkRenderPass renderPass;
+
+	VkDescriptorSetLayout descriptorSetLayout;
+	VkDescriptorPool descriptorPool;
+	std::vector<VkDescriptorSet> descriptorSets;
+
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
@@ -64,6 +72,11 @@ class HelloTriangleApp
 	VkDeviceMemory vertexBufferMemory;
 	VkBuffer indexBuffer;
 	VkDeviceMemory indexBufferMemory;
+
+	std::vector<VkBuffer> uniformBuffers;
+	std::vector<VkDeviceMemory> uniformBuffersMemory;
+	std::vector<void *> uniformBuffersMapped;
+
 	std::vector<VkCommandBuffer> commandBuffers;
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;
@@ -83,11 +96,15 @@ class HelloTriangleApp
 	void createImageViews();
 	VkShaderModule createShaderModule(const std::vector<char>&);
 	void createRenderPass();
+	void createDescriptorSetLayout();
 	void createGraphicsPipeline();
 	void createFramebuffers();
 	void createCommandPool();
 	void createVertexBuffer();
 	void createIndexBuffer();
+	void createUniformBuffers();
+	void createDescriptorPool();
+	void createDescriptorSets();
 	void createCommandBuffers();
 	void recordCommandBuffer(VkCommandBuffer, uint32_t);
 	void createSyncObjects();
@@ -96,6 +113,8 @@ class HelloTriangleApp
 	void createBuffer(VkDeviceSize, VkBufferUsageFlags,
 			  VkMemoryPropertyFlags, VkBuffer&, VkDeviceMemory&);
 	void copyBuffer(VkBuffer, VkBuffer, VkDeviceSize);
+
+	void updateUniformBuffer(uint32_t);
 
 	static void framebufferResizeCallback(GLFWwindow *, int, int);
 
@@ -152,6 +171,13 @@ const std::vector<Vertex> vertices = {
 
 const std::vector<uint16_t> indices = {
 	0, 1, 2, 2, 3, 0
+};
+
+struct UniformBufferObject
+{
+	glm::mat4 model;
+	glm::mat4 view;
+	glm::mat4 proj;
 };
 
 std::vector<const char *> getRequiredExtensions();
